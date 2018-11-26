@@ -3,6 +3,7 @@ import './App.css';
 import { Formik, Form, ErrorMessage, Field, FieldArray, arrayHelpers } from 'formik';
 import * as yup from 'yup';
 import SearchComponent from './searchComponent';
+import Original from './original';
 
 class App extends Component {
   constructor() {
@@ -14,11 +15,10 @@ class App extends Component {
     };
   }
 
-
   render() {
-    const test = () => console.log('test')
     return (
       <div className="App">
+      <Original />
         <header className="App-header">
           <Formik
             initialValues={
@@ -34,9 +34,10 @@ class App extends Component {
             }
             validate={(values => {
               let errors = {};
-              errors.list = values.list.some(element =>
-                element.checked
-              ) ? null : 'must select at least one from list'
+              const isOneChecked = values.list.some(element => element.checked);
+              if (!isOneChecked) {
+                errors.list = 'must select at least one from list'
+              }
               return errors;
             })}
             validateOnBlur={false}
@@ -52,27 +53,20 @@ class App extends Component {
               })
             }
             onSubmit={(values, { setSubmitting }) => {
-              this.setState({submitCount: this.state.submitCount++})
+              console.log('hello')
               setTimeout(() => {
                 alert(JSON.stringify(values, null, 2));
                 setSubmitting(false);
               }, 400);
             }}
-            handleChange={() => console.log('handle change')}
           >
             {({ isSubmitting, dirty, values, submitCount }) => (
               <Form>
                 <Field type="email" name="email" placeholder="email please" />
-                {submitCount} {this.state.submitCount}
-                {
-                  submitCount > 0 &&
-                  <ErrorMessage name="email" component="div" />
-                }
+                {submitCount} {isSubmitting ? 'true': 'false'}
+                { submitCount > 0 && <ErrorMessage name="email" component="div" /> }
                 <Field type="comment" name="comment" placeholder="comment please" />
-                {
-                  submitCount > 0 &&
-                  <ErrorMessage name="comment" component="div" />
-                }
+                { submitCount > 0 && <ErrorMessage name="comment" component="div" /> }
                 <FieldArray name="list"
                   render={arrayHelpers => (
                     <React.Fragment>
@@ -96,12 +90,8 @@ class App extends Component {
                         )
                       })}
                     </React.Fragment>
-
                   )} />
-                  {
-                    submitCount > 0 &&
-                  <ErrorMessage name="list" component="div" />
-                  }
+                  { submitCount > 0 && <ErrorMessage name="list" component="div" /> }
                 <button type="go" disabled={isSubmitting || !dirty}>
                   Submit
                 </button>
