@@ -3,7 +3,6 @@ import './App.css';
 import { Formik, Form, ErrorMessage, Field, FieldArray, arrayHelpers } from 'formik';
 import * as yup from 'yup';
 import SearchComponent from './searchComponent';
-import Original from './original';
 
 class App extends Component {
   constructor() {
@@ -18,7 +17,6 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-      <Original />
         <header className="App-header">
           <Formik
             initialValues={
